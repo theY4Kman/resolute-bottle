@@ -1,0 +1,69 @@
+version: '3.8'
+
+
+volumes:
+  bottle-pgdb: {}
+
+
+services:
+
+  database:
+    image: 'postgres:13-alpine'
+
+    volumes:
+      - bottle-pgdb:/var/lib/postgresql/data
+
+    environment:
+      POSTGRES_PASSWORD: resolute-bottle
+      POSTGRES_USER: resolute-bottle
+      POSTGRES_DB: resolute-bottle
+
+
+  backend:
+    depends_on:
+      - database
+
+    build:
+      context: backend
+      args:
+        ENV: development
+
+    volumes:
+      - ./backend:/backend
+
+    environment:
+      PORT: 80
+      DATABASE_URL: postgres://resolute-bottle:resolute-bottle@database/resolute-bottle
+      ALLOWED_HOSTS: '*'
+
+    stdin_open: true
+    tty: true
+
+
+  frontend:
+    depends_on:
+      - backend
+
+    build:
+      context: frontend
+
+    volumes:
+     - ./frontend:/site
+
+    environment:
+      PORT: 80
+      HTTP_PROXY: http://proxy
+
+
+  proxy:
+    depends_on:
+      - backend
+      - frontend
+
+    image: nginx:1.19-alpine
+
+    volumes:
+      - ./proxy/conf.d:/etc/nginx/conf.d:ro
+
+    ports:
+      - '8080:80'

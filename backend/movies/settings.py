@@ -9,12 +9,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'g%mpcyry0nse06!3363q@ajl%ssrf-)_q!zefl_73&v$28r2aj'
+SECRET_KEY = env.str('SECRET_KEY', default='g%mpcyry0nse06!3363q@ajl%ssrf-)_q!zefl_73&v$28r2aj')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG', default=False)
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS', default=[])
 
 
 # Application definition
@@ -128,6 +128,7 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': (
         'rest_framework_filters.backends.RestFrameworkFilterBackend',
+        'rest_framework.filters.OrderingFilter',
     ),
     'PAGE_SIZE': 100,
 }
