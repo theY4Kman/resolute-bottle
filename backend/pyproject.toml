@@ -30,7 +30,27 @@ build-backend = "poetry.core.masonry.api"
 
 
 [tool.pytest.ini_options]
-addopts = "-vv"
+addopts = [
+    # Verbosity
+    #  0 - hide test names while running (only showing ".", "F", etc)
+    #  1 - show full test names while running
+    #  2 - don't truncate assertion failure printouts (includes full diffs)
+    "--verbosity=2",
+
+    # Show an abbreviated traceback format
+    "--tb=short",
+
+    # Disable migrations — instead, setup the tables directly from models (pytest-django)
+    "--nomigrations",
+
+    # Reuse schema (not data) from previous test runs (if available).
+    # NOTE: if changes are made to schema, pass `--create-db` to force
+    #       pytest-django to initialize the test DB with the schema changes
+    "--reuse-db",
+
+    # Show a few of the slowest test durations (just to keep perf in purview)
+    "--durations=5",
+]
 
 # Only find tests underneath the tests/ directory
 testpaths = "tests"
