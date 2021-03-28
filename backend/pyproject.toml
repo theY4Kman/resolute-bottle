@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "resolute-bottle"
+version = "0.1.0"
+description = ""
+authors = ["Zach \"theY4Kman\" Kanzler <they4kman@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+Django = { version = "^3.2a1", allow-prereleases = true }
+djangorestframework = "^3.12.4"
+psycopg2-binary = "^2.8.6"
+django-environ = "^0.4.5"
+requests = "^2.25.1"
+tqdm = "^4.59.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.2"
+pytest-drf = "^1.1.2"
+pytest-django = "^4.1.0"
+django-extensions = "^3.1.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
