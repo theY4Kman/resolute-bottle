@@ -5,12 +5,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from io import BytesIO
 from typing import Any, Iterable, TextIO, TypeVar
-from zipfile import ZipFile, Path
+from zipfile import Path, ZipFile
 
 import pytz
 import requests
-from django.core.management.base import BaseCommand, CommandError
-from django.db import connection
+from django.core.management.base import BaseCommand
+from django.db import connection, transaction
 from tqdm import tqdm
 
 from movies.models import Genre, Movie, Tag, User
@@ -73,6 +73,7 @@ class Command(BaseCommand):
             help='Do not clear all rows from each table before loading dataset',
         )
 
+    @transaction.atomic
     def handle(self, source: str, verify: bool, truncate: bool, **options):
         if source.startswith('http://') or source.startswith('https://'):
             res = requests.get(source, verify=verify, stream=True)
@@ -198,4 +199,5 @@ class Command(BaseCommand):
             tags_added += len(Tag.objects.bulk_create(tags))
 
         self.stdout.write(f'Successfully added {movies_added} movies, {genres_added} genres, '
-                          f'{users_added} users, {ratings_added} ratings, and {tags_added} tags')
+                          f'{users_added} users, {ratings_added} ratings, and {tags_added} tags',
+                          style_func=self.style.SUCCESS)
