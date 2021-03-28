@@ -14,11 +14,31 @@ requests = "^2.25.1"
 tqdm = "^4.59.0"
 
 [tool.poetry.dev-dependencies]
-pytest = "^6.2.2"
-pytest-drf = "^1.1.2"
-pytest-django = "^4.1.0"
 django-extensions = "^3.1.1"
+pytest = "^6.2.2"
+pytest-assert-utils = "^0.2.2"
+pytest-camel-collect = "^1.0.2"
+pytest-django = "^4.1.0"
+pytest-drf = "^1.1.2"
+pytest-icdiff = "^0.5"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+addopts = "-vv"
+
+# Only find tests underneath the tests/ directory
+testpaths = "tests"
+
+# Only search for tests within files matching these patterns
+python_files = "tests.py test_*.py"
+
+# Discover tests within classes matching these patterns
+# NOTE: the dash represents a word boundary (provided by pytest-camel-collect)
+python_classes = "Test-* Describe-* Context-* With-* Without-* For-* When-* If-* Case-*"
+
+# Only methods matching these patterns are considered tests
+python_functions = "test_* it_* its_*"
