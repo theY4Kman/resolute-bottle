@@ -40,6 +40,9 @@ addopts = [
     # Show an abbreviated traceback format
     "--tb=short",
 
+    # Also run doctests
+    "--doctest-modules",
+
     # Disable migrations — instead, setup the tables directly from models (pytest-django)
     "--nomigrations",
 
@@ -51,9 +54,6 @@ addopts = [
     # Show a few of the slowest test durations (just to keep perf in purview)
     "--durations=5",
 ]
-
-# Only find tests underneath the tests/ directory
-testpaths = "tests"
 
 # Only search for tests within files matching these patterns
 python_files = "tests.py test_*.py"

@@ -2,6 +2,7 @@ import rest_framework_filters as filters
 from rest_framework import pagination, serializers, viewsets
 
 from movies.models import Movie
+from movies.search import parse_search_query
 
 
 class MovieSerializer(serializers.ModelSerializer):
@@ -31,7 +32,10 @@ class MovieFilters(filters.FilterSet):
     q = filters.CharFilter(method='filter_search')
 
     def filter_search(self, qs, name, value):
-        return qs.search(value)
+        if not value:
+            return qs
+
+        return qs.search(parse_search_query(value), search_type='raw')
 
 
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):

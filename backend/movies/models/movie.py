@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Literal, Optional
 
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.postgres.indexes import GinIndex
@@ -29,14 +29,17 @@ class MovieQuerySet(models.QuerySet):
             ),
         )
 
-    def search(self, query: str, phrase: bool = True) -> 'MovieQuerySet':
+    def search(self,
+               query: str,
+               search_type: Literal['plain', 'phrase', 'raw', 'websearch'] = 'phrase',
+               ) -> 'MovieQuerySet':
         qs = self
         qs = qs.annotate(title_vector=MOVIE_TITLE_SEARCH_VECTOR)
         qs = qs.filter(
             title_vector=SearchQuery(
                 query,
                 config=MOVIE_TITLE_SEARCH_VECTOR.config,
-                search_type='phrase' if phrase else 'plain',
+                search_type=search_type,
             ),
         )
         return qs
