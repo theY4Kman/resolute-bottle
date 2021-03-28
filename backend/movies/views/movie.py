@@ -1,3 +1,4 @@
+import rest_framework_filters as filters
 from rest_framework import serializers, viewsets
 
 from movies.models import Movie
@@ -21,6 +22,23 @@ class MovieSerializer(serializers.ModelSerializer):
     genres = serializers.ReadOnlyField(source='genre_names')
 
 
+class MovieFilters(filters.FilterSet):
+    class Meta:
+        model = Movie
+        fields = {}
+
+    q = filters.CharFilter(method='filter_search')
+
+    def filter_search(self, qs, name, value):
+        return qs.search(value)
+
+
 class MovieViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = Movie.objects.annotate_ratings().annotate_genre_names()
+    queryset = (
+        Movie.objects.all()
+            .annotate_ratings()
+            .annotate_genre_names()
+            .order_by('id')
+    )
     serializer_class = MovieSerializer
+    filterset_class = MovieFilters

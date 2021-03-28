@@ -6,10 +6,12 @@ authors = ["Zach \"theY4Kman\" Kanzler <they4kman@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
+
 Django = { version = "^3.2a1", allow-prereleases = true }
-djangorestframework = "^3.12.4"
-psycopg2-binary = "^2.8.6"
 django-environ = "^0.4.5"
+djangorestframework = "^3.12.4"
+djangorestframework-filters ={ version = "^1.0.0dev2", allow-prereleases = true }
+psycopg2-binary = "^2.8.6"
 requests = "^2.25.1"
 tqdm = "^4.59.0"
 
