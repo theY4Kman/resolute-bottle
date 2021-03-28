@@ -1,3 +1,5 @@
+from typing import Optional
+
 from django.contrib.postgres.indexes import GinIndex
 from django.contrib.postgres.search import SearchQuery, SearchVector
 from django.db import models
@@ -29,6 +31,10 @@ class Movie(BaseModel):
     year = models.PositiveIntegerField(blank=True, null=True)
     genres = models.ManyToManyField('Genre', related_name='movies', blank=True)
 
+    # NOTE: IDs out of our control are not guaranteed to be integers
+    imdb_id = models.CharField(max_length=1024, null=True, blank=True)
+    tmdb_id = models.CharField(max_length=1024, null=True, blank=True)
+
     objects = MovieQuerySet.as_manager()
 
     class Meta:
@@ -42,3 +48,13 @@ class Movie(BaseModel):
             return self.title
         else:
             return f'{self.title} ({self.year})'
+
+    @property
+    def imdb_url(self) -> Optional[str]:
+        if self.imdb_id:
+            return f'https://www.imdb.com/title/tt{self.imdb_id}/'
+
+    @property
+    def tmdb_url(self) -> Optional[str]:
+        if self.tmdb_id:
+            return f'https://www.themoviedb.org/movie/{self.tmdb_id}'

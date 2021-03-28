@@ -155,6 +155,14 @@ class Command(BaseCommand):
             ]
             Movie.genres.through.objects.bulk_create(movie_genres)
 
+        for raw_links in chunked(read_csv_dicts(dataset.links, unit='link'), 1000):
+            movie_links = [
+                Movie(id=raw_link['movieId'],
+                      imdb_id=raw_link['imdbId'], tmdb_id=raw_link['tmdbId'])
+                for raw_link in raw_links
+            ]
+            Movie.objects.bulk_update(movie_links, ['imdb_id', 'tmdb_id'])
+
         for raw_ratings in chunked(read_csv_dicts(dataset.ratings, unit='rating'), 1000):
             user_ids = set()
             ratings = []
