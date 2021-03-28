@@ -1,5 +1,5 @@
 import rest_framework_filters as filters
-from rest_framework import serializers, viewsets
+from rest_framework import pagination, serializers, viewsets
 
 from movies.models import Movie
 
@@ -42,3 +42,4 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     )
     serializer_class = MovieSerializer
     filterset_class = MovieFilters
+    pagination_class = pagination.PageNumberPagination

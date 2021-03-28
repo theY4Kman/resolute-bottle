@@ -2,7 +2,14 @@ from typing import Any
 
 import pytest
 from django.db.models import Avg
-from pytest_drf import Returns200, UsesDetailEndpoint, UsesGetMethod, UsesListEndpoint, ViewSetTest
+from pytest_drf import (
+    Returns200,
+    ReturnsPageNumberPagination,
+    UsesDetailEndpoint,
+    UsesGetMethod,
+    UsesListEndpoint,
+    ViewSetTest,
+)
 from pytest_drf.util import pluralized, url_for
 from pytest_lambda import lambda_fixture, static_fixture
 
@@ -34,6 +41,7 @@ class DescribeMovieViewSet(ViewSetTest):
         UsesGetMethod,
         UsesListEndpoint,
         Returns200,
+        ReturnsPageNumberPagination,
     ):
         movies = lambda_fixture(
             lambda: Movie.objects.bulk_create([
@@ -43,9 +51,9 @@ class DescribeMovieViewSet(ViewSetTest):
             autouse=True,
         )
 
-        def it_returns_movies(self, movies, json):
+        def it_returns_movies(self, movies, results):
             expected = express_movies(movies)
-            actual = json
+            actual = results
             assert expected == actual
 
 
@@ -69,9 +77,9 @@ class DescribeMovieViewSet(ViewSetTest):
                 'q': 'monkey',
             })
 
-            def it_returns_only_matching_movies(self, matching_movies, json):
+            def it_returns_only_matching_movies(self, matching_movies, results):
                 expected = express_movies(matching_movies)
-                actual = json
+                actual = results
                 assert expected == actual
 
 
