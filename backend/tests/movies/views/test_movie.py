@@ -18,6 +18,7 @@ from movies.models import Movie
 
 def express_movie(movie: Movie) -> dict[str, Any]:
     return {
+        'id': movie.id,
         'title': movie.title,
         'year': movie.year,
         'genres': list(movie.genres.values_list('name', flat=True)),
